@@ -143,7 +143,9 @@ frontend/
       HistoryView.tsx
   tests/ (or *.test.ts colocated)
   package.json, vite.config.ts, tailwind.config.ts
-README.md
+docs/
+  USER_MANUAL.md       # step-by-step guide for non-developers (separate from README)
+README.md              # developer setup and architecture notes
 ```
 
 ## Components and Interfaces
@@ -496,6 +498,72 @@ backend/data/
 | Unsupported file type | Frontend | `UNSUPPORTED_MSG`, selection cleared |
 | Invalid calibration input | Frontend | Per-field errors, no request sent |
 
+## Documentation and Code Comment Conventions
+
+Covers Requirement 12. Every Source_Function (function, method, class, and React component) gets a Function_Comment written in plain, non-jargon language: what it does, what each input means, and what it gives back (or "Returns nothing").
+
+### Python: Google-style docstrings
+
+Applies to every function, method, and class in `backend/app/` and `backend/train.py`. Sections: one-line summary, optional detail, `Args:` (one line per parameter with its meaning), `Returns:` (or `Returns nothing.`), `Raises:` when relevant.
+
+```python
+def to_arm(px: float, py: float, cal: CalibrationSettings) -> ArmPoint:
+    """Turn a point on the photo into a position the robot arm understands.
+
+    Multiplies the pixel position by the millimeters-per-pixel scale and adds
+    the arm offsets, then rounds to two decimal places.
+
+    Args:
+        px: How far the point is from the left edge of the photo, in pixels.
+        py: How far the point is from the top edge of the photo, in pixels.
+        cal: The calibration settings (scale and X/Y offsets in millimeters).
+
+    Returns:
+        The arm position in millimeters as an ArmPoint with x and y.
+    """
+```
+
+### TypeScript/React: TSDoc blocks
+
+Applies to every exported and internal function, hook, and component in `frontend/src/`. Uses `/** ... */` with a summary, one `@param` per input (for components, one per prop as `@param props.<name>`), and `@returns` (or "Returns nothing.").
+
+```ts
+/**
+ * Decides whether the Analyze button should be clickable.
+ *
+ * @param s.modelLoaded - True when the trained crack model is ready on the backend.
+ * @param s.hasImage - True when a webcam snapshot or uploaded image is selected.
+ * @param s.loading - True while an analysis is already running.
+ * @returns True only when the model is ready, an image is chosen, and nothing is running.
+ */
+export function canAnalyze(s: { modelLoaded: boolean; hasImage: boolean; loading: boolean }): boolean;
+```
+
+### User manual (`docs/USER_MANUAL.md`)
+
+A standalone document for non-developers, separate from the developer `README.md` (Req 12.5). Each step lists the exact PowerShell command or click and what the user should see. Sections:
+
+| # | Section | Req |
+|---|---|---|
+| 1 | First-time setup (Python, Node, virtual env, `pip install`, `npm install`) and running `train.py` | 12.6 |
+| 2 | Starting the Backend and the Frontend, and opening the app in the browser | 12.7 |
+| 3 | Screen tour: model banner, Inspect/History tabs, webcam panel, upload, settings panel, Analyze button, overlay, detection list, simulator, waypoint list | 12.8 |
+| 4 | Getting an image: webcam snapshot and file upload (JPEG/PNG/BMP) | 12.9 |
+| 5 | Running an analysis and reading results: outlines, boxes, detection table columns, Arm_Coordinates | 12.10 |
+| 6 | Calibration settings with a worked example (below) | 12.11 |
+| 7 | Path simulation: Start, Pause, Reset, "Inspection complete" | 12.12 |
+| 8 | History: browsing and reopening saved Inspections | 12.13 |
+| 9 | Troubleshooting: "Model not trained" banner, webcam denied, Backend unreachable, unsupported file, slow CPU training, OneDrive file locks | 12.14 |
+
+Worked calibration example included in section 6 (uses the formula from Property 1):
+
+```
+mm_per_pixel = 0.5, offset_x = 100, offset_y = -20, pixel (200, 80)
+arm X = 200 × 0.5 + 100 = 200.00 mm
+arm Y =  80 × 0.5 − 20  =  20.00 mm
+→ arm (200.00, 20.00)
+```
+
 ## Correctness Properties
 
 *A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
@@ -651,3 +719,9 @@ For any Inspection_Store containing a mix of valid inspections with random times
 - README PowerShell commands executed end to end on a clean checkout.
 - `python -c "import torch; print(torch.cuda.is_available())"` confirms the CUDA wheel when a GPU is present.
 - The workspace is under OneDrive; heavy directories (`.venv`, `node_modules`, `runs/`, datasets) are kept out of sync to avoid file locks.
+
+### Documentation review (Requirement 12)
+
+- Comment coverage and plain-language quality (Req 12.1–12.4) are checked by code review; no correctness property is defined because "plain language" is not machine-checkable.
+- Optional automated check: `backend/tests/test_docstrings.py` walks `backend/app/` and `backend/train.py` with `ast` and fails if any `FunctionDef`, `AsyncFunctionDef`, or `ClassDef` lacks a docstring, or if a function with parameters has no `Args:` section. This is a single example test, not a property test.
+- `docs/USER_MANUAL.md` (Req 12.5–12.14) is reviewed against the section table above; the worked calibration example is cross-checked against a `to_arm` unit test using the same numbers (expected arm (200.00, 20.00)).

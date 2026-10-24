@@ -1,0 +1,18 @@
+# CrackBot AI backend dependencies (pinned).
+# Install PyTorch FIRST from the PyTorch index (see README), because a plain
+# "pip install torch" on Windows gives a CPU-only build:
+#   Intel Arc GPU: pip install torch==2.12.1+xpu torchvision==0.27.1+xpu --index-url https://download.pytorch.org/whl/xpu --extra-index-url https://pypi.org/simple
+#   GPU (NVIDIA):  pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cu128
+#   CPU only:      pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cpu
+fastapi==0.162.0
+uvicorn==0.54.0
+python-multipart==0.0.32
+ultralytics==8.4.187
+opencv-python==4.14.0.94
+numpy==2.5.2
+pydantic==2.14.1
+
+# Testing
+pytest==9.1.1
+hypothesis==6.170.9
+httpx==0.28.1

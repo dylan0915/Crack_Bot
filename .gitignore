@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.hypothesis/
+
+# Model weights, training output, datasets, and saved inspections
+backend/weights/
+backend/data/
+backend/runs/
+runs/
+datasets/
+*.pt
+
+# Frontend
+node_modules/
+frontend/dist/
+*.log

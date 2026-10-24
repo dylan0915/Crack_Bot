@@ -36,6 +36,10 @@ The frontend is React + TypeScript + Vite + Tailwind with Canvas or SVG visualiz
 - **Inspection_Store**: The local filesystem directory in which the Backend saves one subdirectory per Inspection.
 - **History_View**: The Frontend view that lists saved Inspections and allows reopening a saved Inspection.
 - **Webcam_Capture**: The Frontend component that shows a live webcam preview and captures a still snapshot.
+- **README**: The developer-facing documentation file at the repository root describing installation, training, and launch commands.
+- **User_Manual**: The non-developer instruction document at `docs/USER_MANUAL.md` explaining step by step how to operate the CrackBot_App.
+- **Function_Comment**: A docstring (Python) or JSDoc/TSDoc block comment (TypeScript) placed directly above or at the start of a function, written in plain non-technical language.
+- **Source_Function**: Any function, method, or React component defined in the Backend Python source, the Training_Script, or the Frontend TypeScript source.
 
 ## Requirements
 
@@ -180,3 +184,24 @@ The frontend is React + TypeScript + Vite + Tailwind with Canvas or SVG visualiz
 2. THE CrackBot_App SHALL document in a README the commands to install Backend dependencies, install Frontend dependencies, run the Training_Script, start the Backend, and start the Frontend.
 3. THE Backend SHALL listen on localhost port 8000 and allow cross-origin requests from the Frontend development server origin.
 4. THE Backend SHALL run Model inference on a CUDA GPU when one is available and on the CPU otherwise.
+
+### Requirement 12: Documentation and Code Comments
+
+**User Story:** As a non-developer user or a new contributor, I want every function explained in plain language and a step-by-step user manual, so that I can understand the code and operate the program without developer knowledge.
+
+#### Acceptance Criteria
+
+1. THE CrackBot_App SHALL include a Function_Comment for every Source_Function.
+2. THE Function_Comment SHALL describe, in plain non-jargon language, what the Source_Function does.
+3. THE Function_Comment SHALL describe each input parameter of the Source_Function and the meaning of each input parameter.
+4. THE Function_Comment SHALL describe the value returned by the Source_Function, or state that the Source_Function returns nothing.
+5. THE CrackBot_App SHALL provide the User_Manual as a document separate from the README.
+6. THE User_Manual SHALL explain, step by step, first-time setup and running the Training_Script.
+7. THE User_Manual SHALL explain, step by step, starting the Backend and starting the Frontend.
+8. THE User_Manual SHALL describe the screen layout of the Frontend, identifying each panel and control.
+9. THE User_Manual SHALL explain how to capture a snapshot with the Webcam_Capture and how to upload an image file.
+10. THE User_Manual SHALL explain how to run an analysis and how to read the results, including Outlines, the detection list, and Arm_Coordinates.
+11. THE User_Manual SHALL explain how to set the Calibration_Settings (mm_per_pixel, offset_x, offset_y) and include a worked numeric example converting a pixel point to an Arm_Coordinate.
+12. THE User_Manual SHALL explain how to start, pause, and reset the path simulation in the Path_Simulator.
+13. THE User_Manual SHALL explain how to browse and reopen saved Inspections in the History_View.
+14. THE User_Manual SHALL include a troubleshooting section covering the "Model not trained" banner, denied webcam access, an unreachable Backend, an unsupported file format, slow Training_Script execution on a CPU, and file locks caused by OneDrive synchronization.
